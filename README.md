@@ -17,7 +17,7 @@
      |- workbuddy        # atpet-workbuddy-plugin
      |- command-code     # atpet-command-code-plugin
      |- zcode            # atpet-zcode-plugin
-     |- deepseek-harness # atpet-deepseek-harness-plugin（原生 Host 插件；旧 hook 方案在 hooks-codex/）
+     |- deepseek-harness # atpet-deepseek-harness-plugin
      |- penguin-harness  # atpet-penguin-harness-plugin
 ```
 
@@ -35,20 +35,12 @@
 | WorkBuddy | `atpet-workbuddy-plugin` | CodeBuddy 兼容 hooks | 需显式开启 * | —（仅 `permission` 动画） |
 | Command Code | `atpet-command-code-plugin` | `settings.json` hooks | 需显式开启 * | — |
 | ZCode | `atpet-zcode-plugin` | 插件 hooks | 需显式开启 * | — |
-| DeepSeek Harness | `atpet-deepseek-harness-plugin` | 原生 Host 插件（`install_bundle`，无子进程） | ✅ 单问题 `ask_user_question` 转发到桌宠 | ✅ 原生 `approval/request`，超时自动回退 |
+| DeepSeek Harness | `atpet-deepseek-harness-plugin` | `dsh-hooks-codex` 桥接 | — | —（桥接包只有 5 个事件） |
 | PenguinHarness | `atpet-penguin-harness-plugin` | 插件 hooks（`user_prompt`、`stop`） | — | — |
 
 \* 「需显式开启」：该 Agent 必须实现 Claude 风格的 `PreToolUse` 决策输出（`permissionDecision: "allow"` + `updatedInput`），然后把它的 `agentApp` 追加到 `AT_PET_QUESTION_AGENTS`（逗号分隔、小写），并把对应 `PreToolUse` hook 的超时提高到 600 秒。实现不完整时，请保持关闭，Agent 会继续使用自己的提问界面。
 
-除 Claude Code、OpenCode 与 DeepSeek Harness 外，其他插件共用同一份桥接脚本 `bridge.mjs`（零依赖 Node），各自目录内保留一份，便于单独安装。
-
-DeepSeek Harness 是唯一的**原生 Host 插件**：没有 `bridge.mjs`、不 spawn 子进程，直接读 Harness 的会话日志并接管 `approval/request` 与 `user-questions/request`。安装方式也不同——克隆本仓库后把 `install_bundle` 指向该目录：
-
-```js
-plugin_manager({ action: 'install_bundle', target: '<仓库路径>/Agent-plugin/deepseek-harness' })
-```
-
-旧的 hook 方案仍保留在 `Agent-plugin/deepseek-harness/hooks-codex/`，两者只能开一个。
+除 Claude Code 与 OpenCode 外，其他插件共用同一份桥接脚本 `bridge.mjs`（零依赖 Node），各自目录内保留一份，便于单独安装。
 
 `bridge.mjs` 固定放在插件目录根部，与 `hooks/`、`package.json` 或插件清单同级。配置里的路径变量（`ABSOLUTE_PATH`、`PLUGIN_ROOT`、`${CLAUDE_PLUGIN_ROOT}`、`${CODEBUDDY_PLUGIN_ROOT}`）指向的都是插件目录本身，而不是 `hooks/` 子目录；单独拷贝配置文件时，请把 `bridge.mjs` 留在原目录，或同步改成它的实际路径。
 
