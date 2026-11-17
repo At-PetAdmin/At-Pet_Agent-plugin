@@ -5,6 +5,7 @@
 ## 前提
 
 - Windows 10/11，且 At-Pet 已启动（默认 `127.0.0.1:8765`）。
+- At-Pet 1.3.4 起本地 API 需要鉴权：本目录的 `client-auth.mjs` 必须与 `bridge.mjs` 放在一起，安装时一起拷贝。
 - 已安装 Node.js（用于运行 `bridge.mjs`，无第三方依赖）。
 - GitHub Copilot CLI，或支持 hooks 的 Copilot 环境。
 
@@ -22,6 +23,7 @@
 github-copilot/
 ├── hooks/atpet.json
 ├── bridge.mjs      # hook 实际执行入口，必须与 hooks/ 同级
+├── client-auth.mjs # 读取本机 At-Pet 凭据，必须与 bridge.mjs 同目录
 └── README.md
 ```
 
@@ -42,6 +44,7 @@ github-copilot/
 
 ## 说明
 
+- 鉴权：`bridge.mjs` 通过同目录的 `client-auth.mjs` 读取本机 At-Pet 凭据，请求自动带上 `Authorization: Bearer`。两个文件要一起拷贝，升级 At-Pet 后同步更新本目录；需要覆盖时可用 `AT_PET_API_TOKEN_<AGENTKEY>`、`AT_PET_API_TOKEN` 或 `AT_PET_CREDENTIALS`。详见[本地 API 鉴权与事件顺序](https://github.com/At-PetAdmin/At-Pet/blob/main/docs/local-api-security.md)。
 - Copilot 的 hook 只负责观察，没有权限回调，因此 At-Pet 不会弹出权限确认，也不会转发提问。
 - 桥接脚本从 hook 的 stdin 读取 `toolName`、`cwd` 等字段；若 payload 中没有会话 ID，则用工作目录生成一个稳定 ID。
 - 如果需要排查，可在命令行手动测试：

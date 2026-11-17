@@ -1,4 +1,5 @@
 import type { Plugin } from "@opencode-ai/plugin"
+import { authenticatedFetch } from "./client-auth.mjs"
 
 const apiBase = (process.env.AT_PET_URL || "http://127.0.0.1:8765").replace(/\/+$/, "")
 const permissionPollIntervalMs = 500
@@ -11,7 +12,7 @@ async function atPetFetch(path: string, init: RequestInit = {}, signal?: AbortSi
   else signal?.addEventListener("abort", abortFromParent, { once: true })
   const timeout = setTimeout(() => controller.abort(), requestTimeoutMs)
   try {
-    return await fetch(`${apiBase}${path}`, { ...init, signal: controller.signal })
+    return await authenticatedFetch(apiBase, path, { ...init, signal: controller.signal }, "opencode")
   } finally {
     clearTimeout(timeout)
     signal?.removeEventListener("abort", abortFromParent)

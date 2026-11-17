@@ -5,6 +5,7 @@
 ## 前提
 
 - Windows 10/11，且 At-Pet 已启动（默认 `127.0.0.1:8765`）。
+- At-Pet 1.3.4 起本地 API 需要鉴权：本目录的 `client-auth.mjs` 必须与 `bridge.mjs` 放在一起，安装时一起拷贝。
 - 已安装 Node.js（运行 `bridge.mjs`，无第三方依赖）。
 - 已安装 PenguinHarness 桌面端或 CLI。
 
@@ -16,6 +17,7 @@
 penguin-harness/
 ├── package.json
 ├── bridge.mjs      # hook 实际执行入口，必须与 package.json 同级
+├── client-auth.mjs # 读取本机 At-Pet 凭据，必须与 bridge.mjs 同目录
 └── README.md
 ```
 
@@ -38,5 +40,6 @@ PenguinHarness 的插件以 `plugins/<name>` 形式组织，并通过插件库�
 
 ## 说明
 
+- 鉴权：`bridge.mjs` 通过同目录的 `client-auth.mjs` 读取本机 At-Pet 凭据，请求自动带上 `Authorization: Bearer`。两个文件要一起拷贝，升级 At-Pet 后同步更新本目录；需要覆盖时可用 `AT_PET_API_TOKEN_<AGENTKEY>`、`AT_PET_API_TOKEN` 或 `AT_PET_CREDENTIALS`。详见[本地 API 鉴权与事件顺序](https://github.com/At-PetAdmin/At-Pet/blob/main/docs/local-api-security.md)。
 - 只观察，不做权限决定，也不输出任何内容（空输出表示不干预）；不涉及提问回传。
 - PenguinHarness 的其他 hook 点（如工具调用前后）未在本插件中声明，因为尚未确认其 stdin 格式。
