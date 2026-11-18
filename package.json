@@ -1,0 +1,14 @@
+{
+  "name": "at-pet-agent-plugins",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent plugins that connect agent apps to the At-Pet desktop pet.",
+  "scripts": {
+    "test": "node --test",
+    "e2e": "node scripts/e2e-at-pet.mjs"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}

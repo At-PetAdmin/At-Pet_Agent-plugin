@@ -1,6 +1,6 @@
 {
   "name": "atpet-penguin-harness-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Connect PenguinHarness agents to the At-Pet desktop pet through user_prompt and stop hooks.",
   "keywords": [
     "penguin-plugin",
@@ -12,6 +12,7 @@
   "files": [
     "hooks",
     "bridge.mjs",
+    "client-auth.mjs",
     "README.md"
   ],
   "penguin": {

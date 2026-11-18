@@ -1,6 +1,6 @@
 {
   "name": "atpet-zcode-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Connect the ZCode desktop client to the At-Pet desktop pet through lifecycle hooks.",
   "author": {
     "name": "Ni-ShuWu"

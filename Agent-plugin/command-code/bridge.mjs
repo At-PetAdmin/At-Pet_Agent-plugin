@@ -3,6 +3,7 @@
 // prompts, and answers agent questions through At-Pet's question dialog.
 // Usage: node bridge.mjs [agentApp] [hookEvent]   stdin: hook payload JSON
 import { createHash } from "node:crypto";
+import { authenticatedFetch } from "./client-auth.mjs";
 
 const AGENT_APP = process.argv[2] || "command-code";
 const EVENT_NAME = process.argv[3] || "";
@@ -108,7 +109,7 @@ function sessionOf(payload) {
 }
 
 function request(path, init = {}) {
-  return fetch(`${BASE_URL}${path}`, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+  return authenticatedFetch(BASE_URL, path, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) }, AGENT_APP);
 }
 
 function postJson(path, body) {
