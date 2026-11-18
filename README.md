@@ -72,6 +72,19 @@ At-Pet 1.3.4 起，本地 HTTP API 除 `GET /health` 外都要求 `Authorization
 - 需要覆盖默认行为时，可用 `AT_PET_CREDENTIALS`（凭据库路径）、`AT_PET_API_TOKEN_<AGENTKEY>`（单个 Agent 的 token，例如 `AT_PET_API_TOKEN_ZCODE`）或 `AT_PET_API_TOKEN`（当前进程的 token）。
 - 凭据缺失时 hook 不发请求，Agent 保持自己的原生审批与提问界面，不会自动放行。
 
+## 端到端验证（可选）
+
+`npm test` 用 mock 服务验证鉴权契约，不依赖 At-Pet。需要在真实实例上复核时：
+
+1. 安装并启动 At-Pet 1.3.4+，让它生成或沿用本机凭据库。
+2. 在仓库根目录运行：
+
+```powershell
+npm run e2e
+```
+
+脚本读取本机凭据库，检查 `GET /health` 公开、401/403 边界、权限与提问的创建—轮询—取消，然后逐个运行 8 个 bridge，并确认 At-Pet 把这些来源标记为已连接。At-Pet 未启动或找不到凭据库时直接跳过（退出码 0）；默认地址 `http://127.0.0.1:8765`，可用 `AT_PET_URL` 或 `AT_PET_CREDENTIALS` 覆盖。它只在开发机上手动运行，CI 只跑 `npm test`。
+
 完整的凭据格式、客户端绑定与轮换方式见 At-Pet 仓库的[本地 API 鉴权与事件顺序](https://github.com/At-PetAdmin/At-Pet/blob/main/docs/local-api-security.md)。At-Pet 只监听本机回环地址，请勿把端口转发到网络。
 
 ## 许可证

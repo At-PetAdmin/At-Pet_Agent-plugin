@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Agent plugins that connect agent apps to the At-Pet desktop pet.",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "e2e": "node scripts/e2e-at-pet.mjs"
   },
   "engines": {
     "node": ">=20.11"
